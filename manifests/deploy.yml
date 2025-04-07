@@ -73,9 +73,7 @@ spec:
     - name: http
       port: 80
       targetPort: 80
-    - name: alt
-      port: 8088
-      targetPort: 8088
+      nodePort: 30080  # Add this line for NodePort
   selector:
     app: speedtest-tracker
-  type: ClusterIP  # Changed from ClusterIP to expose externally
+  type: NodePort  # Changed from ClusterIP to expose externally
