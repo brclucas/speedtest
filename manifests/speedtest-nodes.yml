@@ -1,13 +1,17 @@
+---
+# MASTER NODE CONFIGURATION
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: speedtest-tracker
+  name: speedtest-tracker-master
+  namespace: speedtest
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
       storage: 5Gi
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -27,6 +31,16 @@ spec:
       hostNetwork: true
       nodeSelector:
         kubernetes.io/hostname: server-docker
+      dnsPolicy: None
+      dnsConfig:
+        nameservers:
+          - 10.152.183.10
+          - 8.8.8.8
+        searches:
+          - speedtest-tracker.svc.cluster.local
+        options:
+          - name: ndots
+            value: "5"
       containers:
         - name: speedtest-tracker
           image: lscr.io/linuxserver/speedtest-tracker:latest
@@ -41,7 +55,35 @@ spec:
       volumes:
         - name: speedtest-tracker
           persistentVolumeClaim:
-            claimName: speedtest-tracker
+            claimName: speedtest-tracker-master
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: speedtest-tracker-master
+  namespace: speedtest
+spec:
+  ports:
+    - port: 8088
+  selector:
+    app: speedtest-tracker-master
+  type: ClusterIP
+
+---
+# AXION NODE CONFIGURATION
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: speedtest-tracker-axion
+  namespace: speedtest
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -61,6 +103,16 @@ spec:
       hostNetwork: true
       nodeSelector:
         kubernetes.io/hostname: docker-server-axion
+      dnsPolicy: None
+      dnsConfig:
+        nameservers:
+          - 10.152.183.10
+          - 8.8.8.8
+        searches:
+          - speedtest-tracker.svc.cluster.local
+        options:
+          - name: ndots
+            value: "5"
       containers:
         - name: speedtest-tracker
           image: lscr.io/linuxserver/speedtest-tracker:latest
@@ -75,7 +127,35 @@ spec:
       volumes:
         - name: speedtest-tracker
           persistentVolumeClaim:
-            claimName: speedtest-tracker
+            claimName: speedtest-tracker-axion
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: speedtest-tracker-axion
+  namespace: speedtest
+spec:
+  ports:
+    - port: 8088
+  selector:
+    app: speedtest-tracker-axion
+  type: ClusterIP
+
+---
+# ALAMOS NODE CONFIGURATION
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: speedtest-tracker-alamos
+  namespace: speedtest
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -95,6 +175,16 @@ spec:
       hostNetwork: true
       nodeSelector:
         kubernetes.io/hostname: docker-server-alamos
+      dnsPolicy: None
+      dnsConfig:
+        nameservers:
+          - 10.152.183.10
+          - 8.8.8.8
+        searches:
+          - speedtest-tracker.svc.cluster.local
+        options:
+          - name: ndots
+            value: "5"
       containers:
         - name: speedtest-tracker
           image: lscr.io/linuxserver/speedtest-tracker:latest
@@ -109,7 +199,35 @@ spec:
       volumes:
         - name: speedtest-tracker
           persistentVolumeClaim:
-            claimName: speedtest-tracker
+            claimName: speedtest-tracker-alamos
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: speedtest-tracker-alamos
+  namespace: speedtest
+spec:
+  ports:
+    - port: 8088
+  selector:
+    app: speedtest-tracker-alamos
+  type: ClusterIP
+
+---
+# YPF NODE CONFIGURATION
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: speedtest-tracker-ypf
+  namespace: speedtest
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -129,6 +247,16 @@ spec:
       hostNetwork: true
       nodeSelector:
         kubernetes.io/hostname: docker-server-ypf
+      dnsPolicy: None
+      dnsConfig:
+        nameservers:
+          - 10.152.183.10
+          - 8.8.8.8
+        searches:
+          - speedtest-tracker.svc.cluster.local
+        options:
+          - name: ndots
+            value: "5"
       containers:
         - name: speedtest-tracker
           image: lscr.io/linuxserver/speedtest-tracker:latest
@@ -143,4 +271,17 @@ spec:
       volumes:
         - name: speedtest-tracker
           persistentVolumeClaim:
-            claimName: speedtest-tracker
+            claimName: speedtest-tracker-ypf
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: speedtest-tracker-ypf
+  namespace: speedtest
+spec:
+  ports:
+    - port: 8088
+  selector:
+    app: speedtest-tracker-ypf
+  type: ClusterIP
