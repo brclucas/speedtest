@@ -1,29 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: speedtest-tracker-master
+  name: speedtest-tracker
   namespace: speedtest
 spec:
-  replicas: 1
+  replicas: 1 # Puedes ajustar esto si no necesitas una instancia por nodo inicialmente
   selector:
     matchLabels:
-      app: speedtest-tracker-master
+      app: speedtest-tracker
   template:
     metadata:
       labels:
-        app: speedtest-tracker-master
+        app: speedtest-tracker
     spec:
-      hostNetwork: true
-      nodeSelector:
-        kubernetes.io/hostname: server-docker
       containers:
         - name: speedtest-tracker
           image: lscr.io/linuxserver/speedtest-tracker:latest
           ports:
             - containerPort: 80 # La aplicación expone en el puerto 80
-              hostPort: 8080 # Mapeamos el puerto 80 del contenedor al 8080 del host
-            - containerPort: 443 # La aplicación expone en el puerto 443 (HTTPS)
-              hostPort: 8443 # Mapeamos el puerto 443 del contenedor al 8443 del host
           env:
             - name: PUID
               value: "1000"
@@ -38,21 +32,30 @@ spec:
               mountPath: /config
       volumes:
         - name: config-volume
-          hostPath:
-            path: /opt/speedtest-tracker/config/master
-            type: DirectoryOrCreate
+          persistentVolumeClaim:
+            claimName: speedtest-tracker-config-pvc # Asegúrate de crear este PVC
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: speedtest-tracker-master
+  name: speedtest-tracker-service
   namespace: speedtest
 spec:
-  type: ClusterIP
+  type: ClusterIP # Para acceso interno dentro del clúster
   ports:
-    - port: 8080 # Puerto del servicio dentro del clúster (coincide con el hostPort HTTP)
-      targetPort: 80 # Dirige al containerPort HTTP de la aplicación
-    - port: 8443 # Puerto del servicio dentro del clúster (coincide con el hostPort HTTPS)
-      targetPort: 443 # Dirige al containerPort HTTPS de la aplicación
+    - port: 8080 # El puerto al que accederán otros servicios dentro del clúster
+      targetPort: 80 # El puerto en el contenedor
   selector:
-    app: speedtest-tracker-master
+    app: speedtest-tracker
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: speedtest-tracker-config-pvc
+  namespace: speedtest
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi # Ajusta el tamaño según tus necesidades
