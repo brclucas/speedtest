@@ -1,4 +1,5 @@
 ---
+# MASTER NODE
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -14,6 +15,7 @@ spec:
       labels:
         app: postgresql-master
     spec:
+      hostNetwork: true
       nodeSelector:
         kubernetes.io/hostname: server-docker
       containers:
@@ -36,4 +38,122 @@ spec:
         persistentVolumeClaim:
           claimName: postgresql-master-pvc
 
-# ... (similar deployments for axion, alamos, ypf nodes)
+---
+# AXION NODE
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgresql-axion
+  namespace: speedtest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgresql-axion
+  template:
+    metadata:
+      labels:
+        app: postgresql-axion
+    spec:
+      hostNetwork: true
+      nodeSelector:
+        kubernetes.io/hostname: docker-server-axion
+      containers:
+      - name: postgres
+        image: postgres:13
+        env:
+        - name: POSTGRES_PASSWORD
+          value: "axion-password"
+        - name: POSTGRES_USER
+          value: "speedy"
+        - name: POSTGRES_DB
+          value: "speedtest_tracker"
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: postgresql-data
+      volumes:
+      - name: postgresql-data
+        persistentVolumeClaim:
+          claimName: postgresql-axion-pvc
+
+---
+# ALAMOS NODE
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgresql-alamos
+  namespace: speedtest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgresql-alamos
+  template:
+    metadata:
+      labels:
+        app: postgresql-alamos
+    spec:
+      hostNetwork: true
+      nodeSelector:
+        kubernetes.io/hostname: docker-server-alamos
+      containers:
+      - name: postgres
+        image: postgres:13
+        env:
+        - name: POSTGRES_PASSWORD
+          value: "alamos-password"
+        - name: POSTGRES_USER
+          value: "speedy"
+        - name: POSTGRES_DB
+          value: "speedtest_tracker"
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: postgresql-data
+      volumes:
+      - name: postgresql-data
+        persistentVolumeClaim:
+          claimName: postgresql-alamos-pvc
+
+---
+# YPF NODE
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgresql-ypf
+  namespace: speedtest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgresql-ypf
+  template:
+    metadata:
+      labels:
+        app: postgresql-ypf
+    spec:
+      hostNetwork: true
+      nodeSelector:
+        kubernetes.io/hostname: docker-server-ypf
+      containers:
+      - name: postgres
+        image: postgres:13
+        env:
+        - name: POSTGRES_PASSWORD
+          value: "ypf-password"
+        - name: POSTGRES_USER
+          value: "speedy"
+        - name: POSTGRES_DB
+          value: "speedtest_tracker"
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: postgresql-data
+      volumes:
+      - name: postgresql-data
+        persistentVolumeClaim:
+          claimName: postgresql-ypf-pvc

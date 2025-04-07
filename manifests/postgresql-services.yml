@@ -6,6 +6,7 @@ metadata:
   name: postgresql-master
   namespace: speedtest
 spec:
+  clusterIP: None  # Add this
   selector:
     app: postgresql-master
   ports:
@@ -20,6 +21,7 @@ metadata:
   name: postgresql-axion
   namespace: speedtest
 spec:
+  clusterIP: None  # Add this
   selector:
     app: postgresql-axion
   ports:
@@ -34,6 +36,7 @@ metadata:
   name: postgresql-alamos
   namespace: speedtest
 spec:
+  clusterIP: None  # Add this
   selector:
     app: postgresql-alamos
   ports:
@@ -48,6 +51,7 @@ metadata:
   name: postgresql-ypf
   namespace: speedtest
 spec:
+  clusterIP: None  # Add this
   selector:
     app: postgresql-ypf
   ports:
