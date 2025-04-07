@@ -20,9 +20,8 @@ spec:
         - name: speedtest-tracker
           image: lscr.io/linuxserver/speedtest-tracker:latest
           ports:
-            - containerPort: 8080
-              hostPort: 8080 # Asegúrate de que estos puertos estén libres en el nodo
-
+            - containerPort: 80 # La aplicación expone en el puerto 80
+              hostPort: 8080 # Exponemos en el puerto 8080 del host
           env:
             - name: PUID
               value: "1000"
@@ -50,7 +49,7 @@ spec:
   type: ClusterIP
   ports:
     - port: 8080 # Puerto del servicio dentro del clúster
-      targetPort: 8080 # hostPort del contenedor en el Deployment
+      targetPort: 80 # El tráfico se dirige al puerto 80 del contenedor
   selector:
     app: speedtest-tracker-master
 ---
@@ -76,9 +75,8 @@ spec:
         - name: speedtest-tracker
           image: lscr.io/linuxserver/speedtest-tracker:latest
           ports:
-            - containerPort: 8080
-              hostPort: 8080 # Asegúrate de que estos puertos estén libres en el nodo
-
+            - containerPort: 80 # La aplicación expone en el puerto 80
+              hostPort: 8080 # Exponemos en el puerto 8080 del host
           env:
             - name: PUID
               value: "1000"
@@ -105,8 +103,8 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-    - port: 8080 # Puerto del servicio dentro del clúster
-      targetPort: 8080 # hostPort del contenedor en el Deployment
+    - port: 80 # Puerto del servicio dentro del clúster
+      targetPort: 8080 # El tráfico se dirige al puerto 8080 del host (que mapea al 80 del contenedor)
   selector:
     app: speedtest-tracker-axion
 # Repite los bloques de Deployment y Service para los demás nodos (alamos, ypf, etc.)
