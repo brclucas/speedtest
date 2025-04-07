@@ -20,7 +20,7 @@ spec:
         - name: speedtest-tracker
           image: lscr.io/linuxserver/speedtest-tracker:latest
           ports:
-            - containerPort: 80
+            - containerPort: 8080
               hostPort: 8080 # Asegúrate de que estos puertos estén libres en el nodo
 
           env:
@@ -49,7 +49,7 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-    - port: 80 # Puerto del servicio dentro del clúster
+    - port: 8080 # Puerto del servicio dentro del clúster
       targetPort: 8080 # hostPort del contenedor en el Deployment
   selector:
     app: speedtest-tracker-master
@@ -76,7 +76,7 @@ spec:
         - name: speedtest-tracker
           image: lscr.io/linuxserver/speedtest-tracker:latest
           ports:
-            - containerPort: 80
+            - containerPort: 8080
               hostPort: 8080 # Asegúrate de que estos puertos estén libres en el nodo
 
           env:
@@ -105,7 +105,7 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-    - port: 80 # Puerto del servicio dentro del clúster
+    - port: 8080 # Puerto del servicio dentro del clúster
       targetPort: 8080 # hostPort del contenedor en el Deployment
   selector:
     app: speedtest-tracker-axion
