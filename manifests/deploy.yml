@@ -1,56 +1,65 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: kompose convert
-    kompose.version: 1.35.0 (9532ceef3)
-  labels:
-    io.kompose.service: speedtest-tracker
-  name: speedtest-tracker
+  name: speedtest-tracker-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: speedtest-tracker
-  strategy:
-    type: Recreate
+      app: speedtest-tracker
   template:
     metadata:
-      annotations:
-        kompose.cmd: kompose convert
-        kompose.version: 1.35.0 (9532ceef3)
       labels:
-        io.kompose.service: speedtest-tracker
+        app: speedtest-tracker
     spec:
       containers:
-        - env:
-            - name: APP_KEY
-              value: base64:13p3VWmxH2gghqI+69y9lmj8eEfRiC7WzliAdZ6+06c=
-            - name: DB_CONNECTION
-              value: sqlite
-            - name: PGID
-              value: "1000"
-            - name: PUID
-              value: "1000"
+        - name: speedtest-tracker
           image: lscr.io/linuxserver/speedtest-tracker:latest
-          name: speedtest-tracker
           ports:
             - containerPort: 80
-              protocol: TCP
             - containerPort: 443
-              protocol: TCP
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: APP_KEY
+              value: "base64:13p3VWmxH2gghqI+69y9lmj8eEfRiC7WzliAdZ6+06c="
+            - name: DB_CONNECTION
+              value: "sqlite"
           volumeMounts:
-            - mountPath: /config
-              name: speedtest-tracker-cm0
-      restartPolicy: Always
+            - name: config-volume
+              mountPath: /config
       volumes:
-        - configMap:
-            name: speedtest-tracker-cm0
-          name: speedtest-tracker-cm0
-        - name: speedtest-tracker
-          accessModes:
-            - ReadWriteOnce  # Ensure this is ReadWriteOnce, not ReadOnlyMany
-          resources:
-            requests:
-              storage: 5Gi
-          storageClassName: local-path
+        - name: config-volume
+          persistentVolumeClaim:
+            claimName: speedtest-tracker-config-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: speedtest-tracker-service
+spec:
+  selector:
+    app: speedtest-tracker
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 80
+      name: http
+    - protocol: TCP
+      port: 8443
+      targetPort: 443
+      name: https
+  type: ClusterIP
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: speedtest-tracker-config-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi # Ajusta el tamaño según tus necesidades
