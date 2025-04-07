@@ -78,7 +78,7 @@ metadata:
   name: speedtest-tracker
 spec:
   ports:
-    - port: 80
+    - port: 8088
   selector:
     app: speedtest-tracker
   type: ClusterIP
