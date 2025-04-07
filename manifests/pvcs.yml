@@ -1,0 +1,107 @@
+---
+# MASTER NODE PVCs
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgresql-master-pvc
+  namespace: speedtest
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: speedtest-tracker-master-pvc
+  namespace: speedtest
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+
+---
+# AXION NODE PVCs
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgresql-axion-pvc
+  namespace: speedtest
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: speedtest-tracker-axion-pvc
+  namespace: speedtest
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+
+---
+# ALAMOS NODE PVCs
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgresql-alamos-pvc
+  namespace: speedtest
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: speedtest-tracker-alamos-pvc
+  namespace: speedtest
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+
+---
+# YPF NODE PVCs
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgresql-ypf-pvc
+  namespace: speedtest
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: speedtest-tracker-ypf-pvc
+  namespace: speedtest
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi

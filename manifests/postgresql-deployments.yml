@@ -1,0 +1,39 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgresql-master
+  namespace: speedtest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgresql-master
+  template:
+    metadata:
+      labels:
+        app: postgresql-master
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: server-docker
+      containers:
+      - name: postgres
+        image: postgres:13
+        env:
+        - name: POSTGRES_PASSWORD
+          value: "master-password"
+        - name: POSTGRES_USER
+          value: "speedy"
+        - name: POSTGRES_DB
+          value: "speedtest_tracker"
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: postgresql-data
+      volumes:
+      - name: postgresql-data
+        persistentVolumeClaim:
+          claimName: postgresql-master-pvc
+
+# ... (similar deployments for axion, alamos, ypf nodes)

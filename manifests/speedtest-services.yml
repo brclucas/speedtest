@@ -1,0 +1,53 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: speedtest-tracker-master
+  namespace: speedtest
+spec:
+  selector:
+    app: speedtest-tracker-master
+  ports:
+    - port: 8088
+      targetPort: 8088
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: speedtest-tracker-alamos
+  namespace: speedtest
+spec:
+  selector:
+    app: speedtest-tracker-alamos
+  ports:
+    - port: 8088
+      targetPort: 8088
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: speedtest-tracker-axion
+  namespace: speedtest
+spec:
+  selector:
+    app: speedtest-tracker-axion
+  ports:
+    - port: 8088
+      targetPort: 8088
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: speedtest-tracker-ypf
+  namespace: speedtest
+spec:
+  selector:
+    app: speedtest-tracker-ypf
+  ports:
+    - port: 8088
+      targetPort: 8088
+
+# ... (similar services for axion, alamos, ypf nodes)
