@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: speedtest-tracker-master
-  namespace: speedtest # O el namespace que desees
+  namespace: speedtest
 spec:
   replicas: 1
   selector:
@@ -15,13 +15,15 @@ spec:
     spec:
       hostNetwork: true
       nodeSelector:
-        kubernetes.io/hostname: server-docker # Reemplaza con el hostname de tu nodo master
+        kubernetes.io/hostname: server-docker
       containers:
         - name: speedtest-tracker
           image: lscr.io/linuxserver/speedtest-tracker:latest
           ports:
             - containerPort: 80 # La aplicación expone en el puerto 80
               hostPort: 8080 # Exponemos en el puerto 8080 del host
+            - containerPort: 443 # Considera también el puerto HTTPS
+              hostPort: 8443 # Exponemos en el puerto 8443 del host
           env:
             - name: PUID
               value: "1000"
@@ -37,75 +39,20 @@ spec:
       volumes:
         - name: config-volume
           hostPath:
-            path: /opt/speedtest-tracker/config/master # Ruta específica para la configuración del master
+            path: /opt/speedtest-tracker/config/master
             type: DirectoryOrCreate
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: speedtest-tracker-master
-  namespace: speedtest # O el namespace que desees
+  namespace: speedtest
 spec:
   type: ClusterIP
   ports:
     - port: 8080 # Puerto del servicio dentro del clúster
-      targetPort: 80 # El tráfico se dirige al puerto 80 del contenedor
+      targetPort: 80 # Dirige al containerPort de la aplicación
+    - port: 8443 # Puerto del servicio para HTTPS
+      targetPort: 443 # Dirige al containerPort HTTPS de la aplicación
   selector:
     app: speedtest-tracker-master
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: speedtest-tracker-axion
-  namespace: speedtest # O el namespace que desees
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: speedtest-tracker-axion
-  template:
-    metadata:
-      labels:
-        app: speedtest-tracker-axion
-    spec:
-      hostNetwork: true
-      nodeSelector:
-        kubernetes.io/hostname: docker-server-axion # Reemplaza con el hostname del nodo axion
-      containers:
-        - name: speedtest-tracker
-          image: lscr.io/linuxserver/speedtest-tracker:latest
-          ports:
-            - containerPort: 80 # La aplicación expone en el puerto 80
-              hostPort: 8080 # Exponemos en el puerto 8080 del host
-          env:
-            - name: PUID
-              value: "1000"
-            - name: PGID
-              value: "1000"
-            - name: APP_KEY
-              value: "base64:13p3VWmxH2gghqI+69y9lmj8eEfRiC7WzliAdZ6+06c="
-            - name: DB_CONNECTION
-              value: "sqlite"
-          volumeMounts:
-            - name: config-volume
-              mountPath: /config
-      volumes:
-        - name: config-volume
-          hostPath:
-            path: /opt/speedtest-tracker/config/axion # Ruta específica para la configuración del nodo axion
-            type: DirectoryOrCreate
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: speedtest-tracker-axion
-  namespace: speedtest # O el namespace que desees
-spec:
-  type: ClusterIP
-  ports:
-    - port: 80 # Puerto del servicio dentro del clúster
-      targetPort: 8080 # El tráfico se dirige al puerto 8080 del host (que mapea al 80 del contenedor)
-  selector:
-    app: speedtest-tracker-axion
-# Repite los bloques de Deployment y Service para los demás nodos (alamos, ypf, etc.)
-# ...
