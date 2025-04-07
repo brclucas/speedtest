@@ -47,3 +47,10 @@ spec:
         - configMap:
             name: speedtest-tracker-cm0
           name: speedtest-tracker-cm0
+        - name: speedtest-tracker
+          accessModes:
+            - ReadWriteOnce  # Ensure this is ReadWriteOnce, not ReadOnlyMany
+          resources:
+            requests:
+              storage: 5Gi
+          storageClassName: local-path
