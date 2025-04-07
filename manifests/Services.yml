@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: speedtest-tracker-master
+  namespace: speedtest
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8088
+      targetPort: 8088
+  selector:
+    app: speedtest-tracker-master
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: speedtest-tracker-axion
+  namespace: speedtest
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8088
+      targetPort: 8088
+  selector:
+    app: speedtest-tracker-axion
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: speedtest-tracker-alamos
+  namespace: speedtest
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8088
+      targetPort: 8088
+  selector:
+    app: speedtest-tracker-alamos
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: speedtest-tracker-ypf
+  namespace: speedtest
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8088
+      targetPort: 8088
+  selector:
+    app: speedtest-tracker-ypf
